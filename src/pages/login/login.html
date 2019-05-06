@@ -1,0 +1,44 @@
+<ion-content padding>
+    <div padding-horizontal text-center class="animated fadeInDown">
+      <div class="logo"></div>
+      <h2 ion-text class="text-primary">
+        <strong></strong>
+      </h2>
+    </div>
+
+    <ion-card-header>
+      <ion-img width="140" height="140" src="./assets/imgs/ParkGanern2.jpg"></ion-img>
+
+    </ion-card-header>
+
+    <form #loginForm="ngForm" (ngSubmit)="login()" autocomplete="off" class="forms">
+      <ion-item>
+        <ion-label floating>
+          <ion-icon name="mail" item-start class="text-primary"></ion-icon>
+          Email
+        </ion-label>
+        <ion-input name="username" id="loginField" type="text" required [(ngModel)]="Email" #email></ion-input>
+      </ion-item>
+  
+      <ion-item>
+        <ion-label floating>
+          <ion-icon name="lock" item-start class="text-primary" ></ion-icon>
+          Password
+        </ion-label>
+        <ion-input name="password" id="passwordField" type="password" required [(ngModel)]="Password" #password></ion-input>
+      </ion-item>
+  
+      <p></p>
+      <div *ngIf="error" class="alert alert-danger">{{error}}</div>
+      <div>
+        <button ion-button icon-start block color="dark" tappable (click)="login(user)">
+          <ion-icon name="log-in"></ion-icon>
+          SIGN IN
+        </button>
+      </div>
+  
+      <div text-center margin-top>
+        <span ion-text color="secondary" tappable (click)="register()">New here? <strong>Sign up</strong></span>
+      </div>
+    </form>
+  </ion-content>

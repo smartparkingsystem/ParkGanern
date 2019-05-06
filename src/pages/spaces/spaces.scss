@@ -1,0 +1,26 @@
+page-spaces {
+    ion-content {
+        background-size: cover;
+        background-position-x: 50%;
+    }
+
+    ion-header {
+        text-align: center;
+    }
+
+    ion-card {
+        background-color: orange !important;
+        border-radius: 20px !important;
+        box-shadow: none !important;
+    }
+
+    ion-item {
+        background: transparent !important;
+        font-size: 20px !important;
+        color: #242424 !important;
+    }
+    
+    ion-label {
+        color: #242424 !important;
+    }
+}

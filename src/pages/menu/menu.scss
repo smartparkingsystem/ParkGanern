@@ -1,0 +1,120 @@
+page-menu {
+    .background{
+        background-color: rgb(240, 240, 96)
+    }
+
+    .reserveLabel {
+        margin: 13px 8px 0px 0;
+    }
+
+    .noReservations {
+        margin-left: 40px;
+        font-size: 15px;
+    }
+
+    p{
+        padding-left: 15px;
+    }
+
+    label {
+        display: block;
+    }
+
+    ion-header {
+        box-shadow: 0;
+    }
+
+    ion-navbar {
+        height: 60px;
+    }
+
+    .navbar-title {
+        text-align: center;
+    }
+    
+    // ion-content {
+    //     // background-image: uurl('https://webgradients.com/public/webgradients_png/007%20Sunny%20Morning.png');
+    //     // background-image: linear-gradient(#FE9404, #FEE505);
+    //     // background-image: linear-gradient(#F09819, #EDDE5D);
+    //     background-size: cover;
+    //     background-position-x: 50%;
+    // }
+
+    ion-list {
+        font-size: 50px;
+    }
+
+    ion-item {
+        background: transparent !important;
+        font-size: 20px !important;
+        padding-left: 20px !important;
+        font-size: 60px;
+        border-color: black;
+        border-width: 10px;
+    }
+
+    ion-icon {
+        font-size: 50px;
+        display: inline-block;
+    }
+
+    label { 
+        font-size: 60px;
+        padding-bottom: 15px;
+        color: black;
+        display: inline-block;
+    }
+
+    #reserve {
+        border-radius: 10px !important;
+        // margin-bottom: 25px;
+        box-shadow: none !important;
+    }
+
+    ion-card{
+        border-radius: 10px !important;
+    }
+
+    #reserveButton{
+        background-color: orange;
+    }
+
+    #userName{
+        border-style: dashed;
+    }
+
+    button{
+        float:right; 
+    }
+
+    #startButton:hover{
+        background-color: lighten(green, 5%);
+    }
+
+    #my-map{
+        height:250px;
+        width: 280px;
+        margin-top: 10px;
+        margin-left: 25px;
+        border-style: solid;
+        border-color: orange;
+        border-radius: 20px;
+    }
+
+    #today{
+        color:orange;
+    }
+
+    #date{
+        color: orange;
+        font-size: 15px;
+        font-weight: bold;
+    }
+
+    .image1{
+        width: 50px;
+        height: 50px;
+        float: right;
+        position: absolute;
+    }
+}

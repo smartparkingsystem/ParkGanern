@@ -1,0 +1,30 @@
+page-payment {
+    #thankYou{
+        color: orange;
+        font-size: 20px;
+    }
+
+    #reminder{
+        color: red;
+        font-size: 15px;
+    }
+
+    #parkingDetails{
+        border-style: solid;
+        border-color: orange;
+        background-color: orange;
+        border-radius: 30px 30px 10px 10px;
+        padding: 20px;
+        color: white;
+        font-size: 20px;
+        font-weight: bold;
+    }
+    
+    ion-title{
+        color: white;
+    }
+
+    button{
+        float: right;
+    }
+}

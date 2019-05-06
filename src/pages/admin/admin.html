@@ -1,0 +1,34 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-title>Admin Controls</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-list>
+		<ion-item (click)="viewTable()">
+			<ion-icon name="information-circle"></ion-icon>
+			&nbsp; View all parking spaces
+		</ion-item>
+		<ion-item (click)="viewReserved()">
+			<ion-icon name="star"></ion-icon>
+			&nbsp; View reserved spaces
+		</ion-item>
+		<ion-item (click)="viewOccupied()">
+			<ion-icon name="checkmark-circle"></ion-icon>
+			&nbsp; View occupied spaces
+		</ion-item>
+		<ion-item (click)="addCat()">
+			<ion-icon name="add-circle"></ion-icon>
+			&nbsp; Manage categories
+		</ion-item>	
+		<ion-item (click)="sendMessage()">
+			<ion-icon name="mail"></ion-icon>
+			&nbsp; Send Message
+		</ion-item>
+		<ion-item (click)="viewMap()">
+			<ion-icon name="map"></ion-icon>
+			&nbsp; View Map
+		</ion-item>
+	</ion-list>    
+</ion-content>

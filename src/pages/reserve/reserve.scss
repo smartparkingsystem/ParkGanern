@@ -1,0 +1,21 @@
+page-reserve {
+    ion-content {
+        // background-image: url('https://webgradients.com/public/webgradients_png/007%20Sunny%20Morning.png');
+        background-size: cover;
+        background-position-x: 50%;
+    }
+
+    ion-header {
+        text-align: center;
+    }
+    
+    ion-item {
+        background: transparent !important;
+        font-size: 20px !important;
+        color: #242424 !important;
+    }
+    
+    ion-label {
+        color: #242424 !important;
+    }
+}

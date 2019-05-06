@@ -1,0 +1,38 @@
+page-settings {
+    .vertical-menu {
+        width: auto;
+    }
+    
+    .vertical-menu a {
+        color: black;
+        display: block;
+        padding: 12px;
+        text-decoration: none;
+    }
+    
+    .vertical-menu a:hover {
+        background-color: rgb(131, 59, 0);
+        color: white;
+    }
+
+    .scroll-content{
+        margin-top: 50px;
+        text-align: center;
+        // hide the scrollbar
+        overflow-y: hidden !important;
+    }
+
+    ion-content {
+        // background-image: url('https://webgradients.com/public/webgradients_png/007%20Sunny%20Morning.png');
+        background-size: cover;
+        background-position-x: 50%;
+    }
+
+    ion-item {
+        background: transparent !important;
+        padding-left: 20px !important;
+        padding-right: 20px !important;
+        font-size: 15px !important;
+        color: #424242 !important;
+    }
+}

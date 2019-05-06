@@ -1,0 +1,36 @@
+<!--
+  Generated template for the PaymentPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-title>Payment</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-label id="thankYou" text-center>Thank you for Parking!</ion-label>
+
+  <ion-label id="parkingDetails" text-center>Parking Details</ion-label>
+
+  <ion-card>
+    <ion-list>
+      <ion-item>Driver: {{ user?.firstname }} {{ user?.lastname }}</ion-item>
+      <ion-item>License: {{ user?.license }}</ion-item>
+      <ion-item>Plate number: {{ user?.platenum }}</ion-item>
+    </ion-list>
+  </ion-card>
+
+  <ion-card>
+    <ion-item>Time Duration:</ion-item>
+    <ion-item>Interval:</ion-item>
+    <ion-item>Rate per Interval:</ion-item>
+    <ion-item color="primary">Parking Fee: </ion-item>
+  </ion-card>
+
+  <ion-label id="reminder" text-center>*Please pay your parking fee before leaving</ion-label>
+  <button ion-button (click)="homePage()">OK</button>
+
+</ion-content>

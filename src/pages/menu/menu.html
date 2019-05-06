@@ -1,0 +1,112 @@
+<ion-menu [content]="mycontent">
+  <ion-content>
+    <ion-list>
+      <ion-item lines="full">
+       <ion-icon name="contact"></ion-icon> {{ user?.firstname }} {{ user?.lastname }}
+      </ion-item>
+      <ion-item transparent no-lines>
+        Home
+      </ion-item>
+      <ion-item transparent no-lines (click)="profilePage()" >
+        Profile
+      </ion-item>          
+      <ion-item transparent no-lines (click)="settingsPage()">
+        More
+      </ion-item>           
+    </ion-list>
+  </ion-content>
+</ion-menu>
+
+<ion-nav #mycontent [root]="menuPage"></ion-nav>
+<ion-header>
+  <ion-navbar color="primary">
+    <button ion-button menuToggle><ion-icon name="menu"></ion-icon></button>
+    <ion-title>Hi {{user.firstname}} {{user.lastname}}!</ion-title>
+    <!-- <button ion-button><ion-icon name="mail" icon-right></ion-icon></button> -->
+    <!-- <img src="./assets/imgs/ParkGanern.png" alt="Avatar" class="image1"> -->
+    <ion-buttons end>
+      <button ion-button (click)="notifUser()"><ion-icon name="mail"></ion-icon></button>
+    </ion-buttons>
+    <!-- <button ion-button (click)="logOut()"><ion-icon name="log-out"></ion-icon></button> -->
+  </ion-navbar>
+</ion-header>
+
+<!-- <ion-content>
+  <google-map></google-map>
+  <div #map id="my-map"></div>
+</ion-content> -->
+
+<ion-content padding>
+  <!-- <ion-label>
+    {{currentDate}}
+  </ion-label> -->
+  <ion-label id="today" text-center>Today</ion-label>
+  <ion-label id="date" text-center>
+    {{presentDate}}
+  </ion-label>
+  
+<!-- 
+  <ion-label>
+    {{beforeStartPark}}
+  </ion-label>
+
+  <ion-label>
+    {{beforeEndPark}}
+  </ion-label> -->
+
+  <div #map id="my-map"></div>
+
+  <ion-card id="reserve">
+    <ion-card-header>
+      <ion-title>Parking Space</ion-title>
+    </ion-card-header>
+    
+    <ion-card-content text-center>
+      <button *ngIf="user?.hasReserved" ion-button block right color="danger" name="cancelReservation" (click)="showConfirm(reservation)">Cancel reservation</button>
+      <button *ngIf="!user?.hasReserved" ion-button block right name="reserveButton" (click)="reservationPage()">Book a space</button>
+    </ion-card-content>   
+  </ion-card>
+
+  <ion-item-divider style="text-transform: uppercase" no-lines >
+    <ion-label color="primary">
+        Your Reservation
+    </ion-label>  
+  </ion-item-divider>
+
+  <ion-item-group>
+    <ion-item-divider no-lines>
+        <ion-label class="reserveLabel">
+        </ion-label>
+    </ion-item-divider>
+    <ion-list>
+      <div *ngIf= "user?.hasReserved">
+          <ion-card>        
+            <ion-card-content>            
+              <button *ngIf="!user?.hasReserved" ion-button clear right color="secondary" name="reserveButton" (click)="reservationPage()">Book a space</button>
+              <strong>Space: </strong>{{ reservation.space }}
+              <br>
+              <strong>Start: </strong>{{ reservation.start }}
+              <br>
+              <strong>End: </strong> {{ reservation.end }}
+              <!-- <br>
+              <strong>Timer: </strong> {{timerVal}}
+              <button ion-button round secondary medium id="startButton" (click)="endParking()">Start Parking</button>
+              <button ion-button round secondary medium (click)="stopParking()">Stop counter!</button> -->
+            </ion-card-content>
+          </ion-card>
+
+          <!-- <ion-card>
+            <strong>Timer Value: </strong>  
+            <ion-input id="email" id="loginField" type="text" required [(ngModel)]="timer" #timerValue></ion-input>
+            <button ion-button round secondary medium (click)="enterTime(timer)">ENTER</button>
+            <strong>Total Parking Fee: </strong> <p id="parkFee"></p>
+          </ion-card> -->
+      </div>
+      <div class="noReservations" *ngIf="!user?.hasReserved">
+        No reservation yet!
+      </div>
+     
+    </ion-list>
+  </ion-item-group>
+
+</ion-content>

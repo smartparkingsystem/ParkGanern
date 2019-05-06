@@ -1,0 +1,92 @@
+page-user {
+    .editUser {
+        display:none;
+    }
+
+    ion-content {
+        // background-image: url('https://webgradients.com/public/webgradients_png/007%20Sunny%20Morning.png');
+        background-size: cover;
+        background-position-x: 50%;
+    }
+
+    // ion-list{
+    //     padding-top: 5  px;
+    // }
+
+    #user {
+        color: #424242 !important;
+    }
+
+    .profileIcon{
+        color: orange;
+    }
+
+    button {
+        float: right;
+    }
+
+    // ion-img{
+    //     border-radius: 30pc;
+    // }
+    
+    // Hover User Profile (START)
+    .container {
+        position: relative;
+        width: 100%;
+        // padding-top: 5%;
+        padding-bottom: 5%;
+        // background-image: linear-gradient(#F09819, #EDDE5D);
+    }
+    
+    .image1 {
+        opacity: 1;
+        display: block;
+        // width: 100%;
+        margin-top: 15px;
+        margin-left: 180px;
+        padding-left: 5%;
+        width: 150px;
+        height: auto;
+        transition: .5s ease;
+        backface-visibility: hidden;
+        position: absolute;
+    }
+
+    .image2 {
+        // position: relative;
+        // border-radius: 10px;
+    }
+    
+    .middle {
+        transition: .5s ease;
+        opacity: 0;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        -ms-transform: translate(-50%, -50%);
+        text-align: center;
+    }
+    
+    .container:hover .image {
+        opacity: 0.3;
+    }
+    
+    .container:hover .middle {
+        opacity: 1;
+    }
+    
+    .text {
+        background-color: #4CAF50;
+        color: white;
+        font-size: 16px;
+        padding: 16px 32px;
+    }
+    
+    // Hover user profile (END)
+
+    .profileDetails{
+        padding-left: 10px;
+        padding-right: 20px;
+    }
+}
