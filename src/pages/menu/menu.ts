@@ -137,7 +137,7 @@ export class MenuPage {
         if (currentTime == beforeStartPark){
           console.log("ALERT 2");
           this.alert2('30 MINS. LEFT before PARKING STARTS.');
-          this.sendNotif1();
+          // this.sendNotif1();
           return;
         }
 
@@ -182,21 +182,21 @@ export class MenuPage {
     });
   }
 
-  sendNotif1(){
+  // sendNotif1(){
     // var notif = {
     //   'message': 'You have 30 mins. left before parking starts',
     //   'parking_space': 'D2'
     // // }
-    console.log("Message sent")
-    let notification = {} as Notification;
-    this.afAuth.authState.take(1).subscribe(auth => {
-      const notificationRef: firebase.database.Reference = this.afDatabase.database.ref(`users/${auth.uid}/notifications`);
-      console.log(auth)
-      notificationRef.push(notification).then(() => {
-        console.log("SEND NOTIF")
-        notificationRef.update({notification:"30 MINS. LEFT before PARKING STARTS"})
-      })
-    });
+    // console.log("Message sent")
+    // let notification = {} as Notification;
+    // this.afAuth.authState.take(1).subscribe(auth => {
+    //   const notificationRef: firebase.database.Reference = this.afDatabase.database.ref(`users/${auth.uid}/notifications`);
+    //   console.log(auth)
+    //   notificationRef.push(notification).then(() => {
+    //     console.log("SEND NOTIF")
+    //     notificationRef.update({notification:"30 MINS. LEFT before PARKING STARTS"})
+    //   })
+    // });
     // -------------------
     // var uniqueNotif = firebase.database().ref().child('/users/'+this.userId+'/notifications').push().key;
     // this.afAuth.authState.take(1).subscribe(auth => {
@@ -204,7 +204,7 @@ export class MenuPage {
     //   // this.afDatabase.database.ref('/users/'+this.userId+'/notifications').push("HELLO");
     //   firebase.database().ref('/users/'+this.userId+'/notifications/'+uniqueNotif).set(notif);
     // });
-  }
+  // }
 
   // sendNotif1(){
   //   console.log("Message sent")
@@ -218,14 +218,14 @@ export class MenuPage {
 
   // sendNotif1(){
   //   console.log("Message sent")
-    // var userId = this.afAuth.auth.currentUser.uid;
-    // this.afAuth.authState.take(1).subscribe(userId => {
-    //   // thisAuth = userId;
+  //   var userId = this.afAuth.auth.currentUser.uid;
+  //   this.afAuth.authState.take(1).subscribe(userId => {
+      // thisAuth = userId;
     // });
     // this.afDatabase.database.ref('users/${userId}/notifications').push("HELLO");
 
   //   var userId = this.afAuth.auth.currentUser.uid;
-  //   this.afDatabase.database.ref(`/users/${userId}/notifications`).push("HELLO");
+  //   this.afDatabase.database.ref(`/users/${userId}/notifications/`).push("HELLO");
   // }
 
   extendParking(){
