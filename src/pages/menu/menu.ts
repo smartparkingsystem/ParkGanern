@@ -54,7 +54,7 @@ export class MenuPage {
   //   this.long='';
   //   this.lat='';
   // }
-  alert(message: string, space: string){
+  alert(message: string, space: string, reservation: Reservation){
     this.alertCtrl.create({
       title: "Cancellation",
       message: message,
@@ -66,7 +66,10 @@ export class MenuPage {
           }        
         },
         {
-          text: 'No'
+          text: 'No',
+          handler: () => {
+            this.continueReservation(reservation);
+          }
         }
       ],
       mode: "ios"
@@ -146,7 +149,7 @@ export class MenuPage {
           var space = this.reservation.space;
           var startPark = this.reservation.start;
           var endPark = this.reservation.end;
-          this.alert('Your reservation already started. Would you like to cancel your reservation for space ' + space + ' from ' + startPark + ' to ' + endPark + '?', space);
+          this.alert('Your reservation already started. Would you like to cancel your reservation for space ' + space + ' from ' + startPark + ' to ' + endPark + '?', space, this.reservation);
           
         }
 
@@ -250,7 +253,7 @@ export class MenuPage {
   }
 
   showConfirm(reservation: Reservation){
-    this.alert('Are you sure you want to cancel your reservation for space ' + reservation.space + ' from ' + reservation.start + ' to ' + reservation.end + '?', reservation.space);
+    this.alert('Are you sure you want to cancel your reservation for space ' + reservation.space + ' from ' + reservation.start + ' to ' + reservation.end + '?', reservation.space, reservation);
   }
 
   cancelReservation(space: string){
@@ -268,6 +271,16 @@ export class MenuPage {
         });
       });
     });      
+  }
+
+  continueReservation(reservation: Reservation){
+    
+    this.afAuth.authState.take(1).subscribe(auth => {
+      reservation.user = auth.uid; 
+      // const occupiedRef: firebase.database.Reference = this.afDatabase.database.ref(`occupied`);
+      this.afDatabase.database.ref(`occupied`).push(reservation);
+      this.afDatabase.database.ref(`spaces/${reservation.space}/status`).set("occupied");
+    });
   }
 
 
@@ -380,4 +393,6 @@ export class MenuPage {
       console.log('Error getting location', error);
     });
   }
+
+ 
 }

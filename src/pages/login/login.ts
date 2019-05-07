@@ -44,13 +44,13 @@ export class LoginPage {
         this.afAuth.auth.signInWithEmailAndPassword(this.email.value, this.password.value)
         .then(data => {
           this.alert('Sucess! You\'re logged in!');
-                this.navCtrl.setRoot('MenuPage');
+            this.navCtrl.setRoot('MenuPage');
         })
         .catch( (error) => {
               console.log("got an error:", error);
               if (error.code == 'auth/network-request-failed'){
                 // wala sya internet connection here
-                this.alert('Connection Timeout! Wala ka net');
+                this.alert('Connection Timeout!');
               }
               else if(error.code == 'auth/wrong-password' || error.code == 'auth/user-not-found' || error.code == 'auth/invalid-email'){
                 // invalid login here
