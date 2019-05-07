@@ -1,21 +1,38 @@
 <ion-menu [content]="mycontent">
   <ion-content>
     <ion-list>
-      <ion-item lines="full">
-       <ion-icon name="contact"></ion-icon> {{ user?.firstname }} {{ user?.lastname }}
+      <ion-item lines="full" class="fontColor">
+       <ion-icon name="contact" class="fontColor"></ion-icon> {{ user?.firstname }} {{ user?.lastname }}
       </ion-item>
       <ion-item transparent no-lines>
         Home
       </ion-item>
-      <ion-item transparent no-lines (click)="profilePage()" >
+      <ion-item transparent no-lines (click)="profilePage()">
         Profile
       </ion-item>          
-      <ion-item transparent no-lines (click)="settingsPage()">
+      <!-- <ion-item transparent no-lines (click)="settingsPage()">
         More
-      </ion-item>      
-      <ion-item>
-        hello
-      </ion-item>     
+      </ion-item>         -->
+      <ion-item transparent no-lines>
+        About
+      </ion-item> 
+      <ion-item transparent no-lines>
+        Contact Us
+      </ion-item> 
+      <ion-item transparent no-lines (click)="logOut()">
+        Logout
+      </ion-item> 
+  
+      <div class="container">
+        <!-- <img src="./assets/imgs/ParkGanern.png" alt="Avatar" class="image1"> -->
+        <!-- <div class="middle">
+          <div class="text">Change Photo</div>
+        </div> -->
+        <img src="./assets/imgs/CoverPhoto.jpg" alt="Avatar" class="image1">
+      </div>
+
+      <!-- <button id="logOutButton" ion-button (click)="logOut()"><ion-icon name="log-out"></ion-icon></button> -->
+
     </ion-list>
   </ion-content>
 </ion-menu>
