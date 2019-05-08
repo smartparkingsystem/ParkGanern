@@ -5,13 +5,7 @@ import { AngularFireDatabase } from 'angularfire2/database';
 import { User } from '../../models/user';
 import { Reservation } from '../../models/reservation';
 import * as moment from 'moment';
-// import { isObject } from 'ionic-angular/umd/util/util';
-// import { startTimeRange } from '@angular/core/src/profile/wtf_impl';
-// import { Observable } from 'rxjs/Observable';
-// import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { Geolocation } from '@ionic-native/geolocation';
-// import { convertUrlToDehydratedSegments } from 'ionic-angular/umd/navigation/url-serializer';
-// import { last } from 'rxjs/operators';
 import * as firebase from 'firebase/app';
 
 declare var google:any;
@@ -27,8 +21,6 @@ export class MenuPage {
   timerVal;
   value;
   fee;
-  // lat: any;
-  // lng: any;
   lat: number;
   long: number;
   presentDate = moment().format('MMMM DD, YYYY, hh:mm A');
@@ -36,7 +28,6 @@ export class MenuPage {
   beforeEndPark;
   currentTime = moment().format('hh:mm A');
   
-
   user = {} as User;
   reservation = {} as Reservation;
   public spaces: Array<any> = [];
@@ -120,18 +111,18 @@ export class MenuPage {
   
   ionViewDidLoad() {
     this.DisplayMap();
-    // this.notifyUser();
+    
     this.afAuth.authState.take(1).subscribe(auth => {
     // var userId = this.afAuth.auth.currentUser.uid;
       this.afDatabase.database.ref(`/users/${auth.uid}`).on('value', userSnapshot => {
         this.user = userSnapshot.val();
         console.log(this.user.hasReserved);
         this.reservation = this.user.reservation;
-        var startPark = this.reservation.start;
-        var endPark = this.reservation.end;
 
-        this.beforeStartPark = moment(startPark,"hh:mm A").subtract(1, 'minutes').format('hh:mm A');
-        this.beforeEndPark = moment(endPark,"hh:mm A").subtract(1, 'minutes').format('hh:mm A');
+        // startPark = this.reservation.start;
+        // endPark = this.reservation.end;
+        this.beforeStartPark = moment(this.reservation.start,"hh:mm A").subtract(1, 'minutes').format('hh:mm A');
+        this.beforeEndPark = moment(this.reservation.end,"hh:mm A").subtract(1, 'minutes').format('hh:mm A');
         var beforeStartPark = this.beforeStartPark;
         var beforeEndPark = this.beforeEndPark;
         
@@ -145,12 +136,11 @@ export class MenuPage {
         }
 
         if (currentTime == startPark){
-          this.reservation = this.user.reservation;
+          // this.reservation = this.user.reservation;
           var space = this.reservation.space;
           var startPark = this.reservation.start;
           var endPark = this.reservation.end;
-          this.alert('Your reservation already started. Would you like to cancel your reservation for space ' + space + ' from ' + startPark + ' to ' + endPark + '?', space, this.reservation);
-          
+          this.alert('Your reservation already started. Would you like to cancel your reservation for space ' + space + ' from ' + startPark + ' to ' + endPark + '?', space, this.reservation); 
         }
 
         if (currentTime == beforeEndPark){
@@ -172,6 +162,14 @@ export class MenuPage {
 
   settingsPage(){
     this.navCtrl.push('SettingsPage');
+  }
+
+  aboutPage(){
+    this.navCtrl.push('AboutPage');
+  }
+
+  contactusPage(){
+    this.navCtrl.push('ContactPage');
   }
 
   beginParking(){
@@ -207,28 +205,6 @@ export class MenuPage {
     //   // this.afDatabase.database.ref('/users/'+this.userId+'/notifications').push("HELLO");
     //   firebase.database().ref('/users/'+this.userId+'/notifications/'+uniqueNotif).set(notif);
     // });
-  // }
-
-  // sendNotif1(){
-  //   console.log("Message sent")
-  //   // let notification = {} as Notification;
-  //   var thisAuth;
-  //   this.afAuth.authState.take(1).subscribe(auth => {
-  //     thisAuth = auth;
-  //   });
-  //   this.afDatabase.database.ref(`users/${auth.uid}/notifications`).push("HELLO");
-  // }
-
-  // sendNotif1(){
-  //   console.log("Message sent")
-  //   var userId = this.afAuth.auth.currentUser.uid;
-  //   this.afAuth.authState.take(1).subscribe(userId => {
-      // thisAuth = userId;
-    // });
-    // this.afDatabase.database.ref('users/${userId}/notifications').push("HELLO");
-
-  //   var userId = this.afAuth.auth.currentUser.uid;
-  //   this.afDatabase.database.ref(`/users/${userId}/notifications/`).push("HELLO");
   // }
 
   extendParking(){
@@ -289,38 +265,7 @@ export class MenuPage {
     this.afAuth.auth.signOut().then();
     this.navCtrl.setRoot('LoginPage');
   }
-// -------------------------------------------------------------------
-  // endParking(){
-  //   setTimeout(() => {
-  //     this.alert2('30 MINS. LEFT before PARKING ENDS.');
-  //   },10000)
-  // }
 
-  // startParking(){
-  //   setTimeout(() => {
-  //     this.alert3('First 3 hours of free parking is done. You will now be charged 50PHP every 30mins.');
-  //   },10000)
-  // }
-
-  // startTimer(){
-  //   this.timerVar = Observable.interval(1000).subscribe( x => {
-  //     console.log(x)
-  //     this.timerVal = x;
-  //   })
-  // }
-
-  // stopParking(){
-  //   this.value = this.timerVar.unsubscribe()
-  //   console.log("click");
-  //   console.log(this.fee);
-  // }
-
-  // enterTime(timer){
-  //   timer = timer * 50;
-  //   console.log(timer);
-  //   document.getElementById('parkFee').innerHTML=timer;
-  // }
-// -------------------------------------------------------------------
   notifUser(){
     this.navCtrl.push('NotifuserPage')
   }
@@ -393,6 +338,4 @@ export class MenuPage {
       console.log('Error getting location', error);
     });
   }
-
- 
 }
