@@ -4,8 +4,8 @@ import { AngularFireDatabase }from 'angularfire2/database';
 import { Reservation } from '../../models/reservation';
 import { AngularFireAuth } from 'angularfire2/auth';
 import * as moment from 'moment';
+import { extendMoment } from 'moment-range';
 import { variable } from '@angular/compiler/src/output/output_ast';
-import { endTimeRange } from '@angular/core/src/profile/wtf_impl';
 
 /**
  * Generated class for the SpacesPage page.
@@ -20,9 +20,7 @@ import { endTimeRange } from '@angular/core/src/profile/wtf_impl';
   templateUrl: 'spaces.html',
 })
 export class SpacesPage {
-  timerVar;
-  timerVal;
-
+  public allSpaces = []
   public spaces = [];
   public start: string;
   public end: string;
@@ -49,7 +47,6 @@ export class SpacesPage {
           text: 'OK',
           handler: () => {
             this.reserveSpace();
-            // this.startTimer();
           }
         },
         {
@@ -59,35 +56,58 @@ export class SpacesPage {
           }
         }
 
-      ],
-      mode: 'ios'
+      ]
     }).present();
   }
 
-  alert2(message: string){
-    this.alertCtrl.create({
-      title: "Alert",
-      message: message,
-      buttons: ['OK'],
-      mode: 'ios'
-    }).present();
+  ionViewWillLoad(){   
+   
+      
   }
 
-  ionViewWillLoad(){
+  ionViewDidLoad() {
+    this.allSpaces = [];
+    this.afDatabase.database.ref(`spaces`).orderByValue().on('value', spaceSnapshot => {
+      var result = spaceSnapshot.val(); 
+    
+      for(let k in result){  
+        if(this.spaces.includes(k)){
+          this.allSpaces.push({ id: k, color: 'reserved', outline: 'false' })
+        }else{
+          if(result[k].status === 'occupied'){
+            this.allSpaces.push({ id: k, color: 'occupied', outline: 'true' })
+          }else if(result[k].status === 'available'){
+            this.allSpaces.push({ id: k, color: 'available', outline: 'true' })
+          } 
+        }
+               
+      }    
+
+    });
+  }
+
+  ionViewDidEnter(){
+    var isEnabled
     var test = moment(this.navParams.get('start_time'), 'hh:mm A');
-    console.log(test);
-    console.log(moment(test).format('hh:mm A'));
-    console.log(this.navParams.get('cat'));
     this.listRef.on('value', itemSnapshot => {
       itemSnapshot.forEach( itemSnap => {
         this.categories.push(itemSnap.val());
         console.log(itemSnap.val());
       });
     });
-  }
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad SpacesPage');
+    this.afDatabase.database.ref(`spaces`).orderByValue().on('value', spaceSnapshot => {      
+      var result = spaceSnapshot.val(); 
+    
+      for(let k in result){  
+        var space = { id: k, value: true };
+        if (!this.spaces.some(item => item.id === space.id)) {
+          this.spaces.push(space);
+        }
+         
+      }    
+      
+    });
   }
 
   showConfirmed(space: string){
@@ -99,25 +119,32 @@ export class SpacesPage {
   reserveSpace(){
     console.log("BEEE BEEE BEEE");
     let reservation = {} as Reservation;
+
+    
+
     this.afAuth.authState.take(1).subscribe(auth => {
       reservation.user = auth.uid;
-      reservation.fee = 0.00;
       reservation.start = this.start;
       reservation.end = this.end;
+      reservation.space = this.space
+
+      this.afDatabase.database.ref(`preferences`).orderByValue().once('value', preference => {
+        var result = preference.val();
+        var rangeMoment = extendMoment(moment)
+        var range = rangeMoment.range(moment(reservation.start, 'HH:mm'), moment(reservation.end, 'HH:mm'))
+        reservation.fee = (range.diff('minutes') / parseInt(result.rate)) * parseInt(result.amount)
+        console.log(parseInt(result.rate)) 
+      })
+      console.log(reservation.fee)
       
       this.afDatabase.database.ref(`reservations/${this.space}`).push(reservation);
-      this.afDatabase.database.ref(`users/${auth.uid}/reservation`).set(reservation); 
-      this.afDatabase.database.ref(`users/${auth.uid}/reservation`).update({space: this.space}); 
+      this.afDatabase.database.ref(`users/${auth.uid}/reservation`).push(reservation); 
       this.afDatabase.database.ref(`users/${auth.uid}`).update({hasReserved: true}); 
     }); 
 
+
+
     this.navCtrl.setRoot('MenuPage');
-    this.startTimer()
   }
 
-  startTimer(){
-    setTimeout(() => {
-      this.alert2('30 MINS. LEFT before PARKING STARTS.');
-    },5000)
-  }
 }

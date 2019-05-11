@@ -24,8 +24,11 @@ export class MenuPage {
   lat: number;
   long: number;
   presentDate = moment().format('MMMM DD, YYYY, hh:mm A');
+  startPark;
+  endPark;
   beforeStartPark;
   beforeEndPark;
+  gracePeriod;
   currentTime = moment().format('hh:mm A');
   
   user = {} as User;
@@ -41,17 +44,13 @@ export class MenuPage {
     // console.log(this.userId);
   }
 
-  // ngOnInit(){
-  //   this.long='';
-  //   this.lat='';
-  // }
   alert(message: string, space: string, reservation: Reservation){
     this.alertCtrl.create({
       title: "Cancellation",
       message: message,
       buttons: [
         {
-          text: 'Yes',
+          text: 'OK',
           handler: () => {
             this.cancelReservation(space);
           }        
@@ -69,11 +68,11 @@ export class MenuPage {
 
   alert2(message: string){
     this.alertCtrl.create({
-      title: "Alert",
+      title: "Notice",
       message: message,
       buttons: [
         {
-          text: 'Ok'   
+          text: 'OK'   
         },
         {
           text: 'Cancel'
@@ -83,19 +82,20 @@ export class MenuPage {
     }).present();
   }
 
-  alert3(message: string){
+  alert3(message: string, reservation: Reservation){
     this.alertCtrl.create({
-      title: "Notice",
+      title: "Extension",
       subTitle: message,
       buttons: [
         {
-          text: 'Yes',
+          text: 'YES',
           handler: () => {
             this.extendParking();
+            this.continueReservation(reservation);
           }        
         },
         {
-          text: 'No',
+          text: 'NO',
           handler: () => {
             this.reservationPayment();
           }  
@@ -105,13 +105,21 @@ export class MenuPage {
     }).present();
   } 
 
+  alert4(message: string){
+    this.alertCtrl.create({
+      title: "Notice",
+      subTitle: message,
+      buttons: ['OK'],
+      mode: "ios"
+    }).present();
+  }
+
   ionViewWillLoad() {
    
   }
   
   ionViewDidLoad() {
     this.DisplayMap();
-    
     this.afAuth.authState.take(1).subscribe(auth => {
     // var userId = this.afAuth.auth.currentUser.uid;
       this.afDatabase.database.ref(`/users/${auth.uid}`).on('value', userSnapshot => {
@@ -119,43 +127,52 @@ export class MenuPage {
         console.log(this.user.hasReserved);
         this.reservation = this.user.reservation;
 
-        // startPark = this.reservation.start;
-        // endPark = this.reservation.end;
-        this.beforeStartPark = moment(this.reservation.start,"hh:mm A").subtract(1, 'minutes').format('hh:mm A');
-        this.beforeEndPark = moment(this.reservation.end,"hh:mm A").subtract(1, 'minutes').format('hh:mm A');
+        // var space = this.reservation.space;
+        var startPark = this.reservation.start;
+        var endPark = this.reservation.end;
+        var currentTime = this.currentTime;
+        // var gracePeriod = this.gracePeriod;
+       
+        this.beforeStartPark = moment(startPark,"hh:mm A").subtract(1, 'minutes').format('hh:mm A');
+        this.beforeEndPark = moment(endPark,"hh:mm A").subtract(1, 'minutes').format('hh:mm A');
+        this.gracePeriod = moment(startPark,"hh:mm A").add(1, 'minutes').format('hh:mm A');
         var beforeStartPark = this.beforeStartPark;
         var beforeEndPark = this.beforeEndPark;
         
-        var currentTime = this.currentTime;
-
         if (currentTime == beforeStartPark){
-          console.log("ALERT 2");
           this.alert2('30 MINS. LEFT before PARKING STARTS.');
           // this.sendNotif1();
-          return;
         }
 
         if (currentTime == startPark){
-          // this.reservation = this.user.reservation;
+          this.reservation = this.user.reservation;
           var space = this.reservation.space;
           var startPark = this.reservation.start;
           var endPark = this.reservation.end;
           this.alert('Your reservation already started. Would you like to cancel your reservation for space ' + space + ' from ' + startPark + ' to ' + endPark + '?', space, this.reservation); 
         }
-
+    
+        // if (currentTime == gracePeriod){
+        //   // this.reservation = this.user.reservation;
+        //   // var space = this.reservation.space;
+        //   // var startPark = this.reservation.start;
+        //   // var endPark = this.reservation.end;
+        //   this.alert('15 MINS. GRACE PERIOD ENDED. Your reservation for space ' + space + ' from ' + startPark + ' to ' + endPark + ' will be cancelled', space, this.reservation); 
+        // }
+    
         if (currentTime == beforeEndPark){
           this.alert2('30 MINS. LEFT before PARKING ENDS.');
         }
-
+    
         if (currentTime == endPark){
-          this.alert3('Your reservation has ended. Would you like to extend?')
+          this.alert3('Your reservation has ended. Would you like to extend?', this.reservation)
         }
       });
     });    
     
     this.getLocation();
   }
-
+  
   profilePage(){
     this.navCtrl.push('UserPage');
   }
@@ -173,8 +190,8 @@ export class MenuPage {
   }
 
   beginParking(){
-    const statusRef: firebase.database.Reference = this.afDatabase.database.ref(`spaces/A1`);
-    this.afDatabase.database.ref(`spaces/A1/led_status`).once('value').then(function(snapshot){
+    const statusRef: firebase.database.Reference = this.afDatabase.database.ref(`spaces/D2`);
+    this.afDatabase.database.ref(`spaces/D2/led_status`).once('value').then(function(snapshot){
       if(snapshot.val() === 1){
         statusRef.update({ led_status: 0})
       }else{
@@ -253,7 +270,6 @@ export class MenuPage {
     
     this.afAuth.authState.take(1).subscribe(auth => {
       reservation.user = auth.uid; 
-      // const occupiedRef: firebase.database.Reference = this.afDatabase.database.ref(`occupied`);
       this.afDatabase.database.ref(`occupied`).push(reservation);
       this.afDatabase.database.ref(`spaces/${reservation.space}/status`).set("occupied");
     });
