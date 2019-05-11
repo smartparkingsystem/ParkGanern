@@ -6,12 +6,12 @@
     "experimentalDecorators": true,
     "lib": [
       "dom",
-      "es2015"
+      "es7"
     ],
     "module": "es2015",
     "moduleResolution": "node",
     "sourceMap": true,
-    "target": "es5"
+    "target": "es6"
   },
   "include": [
     "src/**/*.ts"
@@ -22,6 +22,7 @@
     "src/**/__tests__/*.ts"
   ],
   "compileOnSave": false,
+  "baseUrl": "src",
   "atom": {
     "rewriteTsconfig": false
   }
