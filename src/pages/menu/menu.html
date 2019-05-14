@@ -94,26 +94,19 @@
   </ion-item-divider>
 
   <ion-item-group>
-    <ion-item-divider no-lines>
-        <ion-label class="reserveLabel">
-        </ion-label>
-    </ion-item-divider>
     <ion-list>
-      <div *ngIf= "user?.hasReserved">
-          <ion-card>        
-            <ion-card-content>            
-              <button *ngIf="!user?.hasReserved" ion-button clear right color="secondary" name="reserveButton" (click)="reservationPage()">Book a space</button>
-              <strong>Space: </strong>{{ reservation.space }}
-              <br>
-              <strong>Start: </strong>{{ reservation.start }}
-              <br>
-              <strong>End: </strong> {{ reservation.end }}
-              <br>
-              <!-- <strong>Timer: </strong> {{timerVal}} -->
-              <!-- <button ion-button round secondary medium id="startButton" (click)="beginParking()">Start Parking</button> -->
-              <!-- <button ion-button round secondary medium (click)="stopParking()">Stop counter!</button> -->
-            </ion-card-content>
-          </ion-card>
+        <ion-card *ngIf= "user?.hasReserved">        
+          <ion-card-content>            
+            <button *ngIf="!user?.hasReserved" ion-button clear right color="secondary" name="reserveButton" (click)="reservationPage()">Book a space</button>
+            <h2><strong>Space:</strong> {{ reservation.space }}</h2>
+            <h2><strong>Start:</strong> {{ reservation.start }}</h2>
+            <h2><strong>End: </strong>{{ reservation.end }}</h2>
+            <h2><strong>Fee: </strong>P{{ reservation.fee }}</h2>
+            <!-- <strong>Timer: </strong> {{timerVal}} -->
+            <!-- <button ion-button round secondary medium id="startButton" (click)="beginParking()">Start Parking</button> -->
+            <!-- <button ion-button round secondary medium (click)="stopParking()">Stop counter!</button> -->
+          </ion-card-content>
+        </ion-card>
 
           <!-- <ion-card>
             <strong>Timer Value: </strong>  
@@ -121,10 +114,8 @@
             <button ion-button round secondary medium (click)="enterTime(timer)">ENTER</button>
             <strong>Total Parking Fee: </strong> <p id="parkFee"></p>
           </ion-card> -->
-      </div>
-      <div class="noReservations" *ngIf="!user?.hasReserved">
-        No reservation yet!
-      </div>
+        <h3 *ngIf="!user?.hasReserved" style="text-align: center">No reservation yet!</h3>
+      
      
     </ion-list>
   </ion-item-group>

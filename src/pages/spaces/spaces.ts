@@ -38,15 +38,15 @@ export class SpacesPage {
 
   }
 
-  alert(message: string){
+  confirmReservation(message: string, space: any){
     this.alertCtrl.create({
       title: "Alert",
       message: message,
       buttons: [
         {
-          text: 'OK',
+          text: 'Confirm',
           handler: () => {
-            this.reserveSpace();
+            this.reserveSpace(space);
           }
         },
         {
@@ -60,6 +60,19 @@ export class SpacesPage {
     }).present();
   }
 
+  alert(message: string){
+    this.alertCtrl.create({
+      title: "Alert",
+      message: message,
+      buttons: [
+        {
+          text: 'Ok'
+        }
+
+      ]
+    }).present();
+  }
+
   ionViewWillLoad(){   
    
       
@@ -67,17 +80,19 @@ export class SpacesPage {
 
   ionViewDidLoad() {
     this.allSpaces = [];
+    console.log(this.spaces)
+    console.log("kakdjaskdj")
     this.afDatabase.database.ref(`spaces`).orderByValue().on('value', spaceSnapshot => {
       var result = spaceSnapshot.val(); 
     
       for(let k in result){  
-        if(this.spaces.includes(k)){
-          this.allSpaces.push({ id: k, color: 'reserved', outline: 'false' })
+        if(this.spaces.some((i) => i.id === k)){
+          this.allSpaces.push({ id: k, color: 'reserved' })
         }else{
           if(result[k].status === 'occupied'){
-            this.allSpaces.push({ id: k, color: 'occupied', outline: 'true' })
+            this.allSpaces.push({ id: k, color: 'occupied' })
           }else if(result[k].status === 'available'){
-            this.allSpaces.push({ id: k, color: 'available', outline: 'true' })
+            this.allSpaces.push({ id: k, color: 'available' })
           } 
         }
                
@@ -95,38 +110,29 @@ export class SpacesPage {
         console.log(itemSnap.val());
       });
     });
-
-    this.afDatabase.database.ref(`spaces`).orderByValue().on('value', spaceSnapshot => {      
-      var result = spaceSnapshot.val(); 
-    
-      for(let k in result){  
-        var space = { id: k, value: true };
-        if (!this.spaces.some(item => item.id === space.id)) {
-          this.spaces.push(space);
-        }
-         
-      }    
-      
-    });
   }
 
-  showConfirmed(space: string){
+  showConfirmed(space: any){
     this.space = space;
-    this.alert("Reserve space " + space + " from " + this.start + " to " + this.end + "?");  
+    if(space.color === "occupied"){
+      this.alert("The space you are trying to reserve is not available. Please select a different space.")
+    }else{
+      this.confirmReservation("Reserve space " + space.id + " from " + this.start + " to " + this.end + "?", this.space);  
+    }
+    
 
   }
 
-  reserveSpace(){
+  reserveSpace(space: any){
     console.log("BEEE BEEE BEEE");
     let reservation = {} as Reservation;
 
-    
-
     this.afAuth.authState.take(1).subscribe(auth => {
+
       reservation.user = auth.uid;
       reservation.start = this.start;
       reservation.end = this.end;
-      reservation.space = this.space
+      reservation.space = space.id;
 
       this.afDatabase.database.ref(`preferences`).orderByValue().once('value', preference => {
         var result = preference.val();
@@ -136,8 +142,8 @@ export class SpacesPage {
         console.log(parseInt(result.rate)) 
       })
       console.log(reservation.fee)
-      
-      this.afDatabase.database.ref(`reservations/${this.space}`).push(reservation);
+      console.log(this.space)
+      this.afDatabase.database.ref(`reservations/${reservation.space}`).push(reservation);
       this.afDatabase.database.ref(`users/${auth.uid}/reservation`).push(reservation); 
       this.afDatabase.database.ref(`users/${auth.uid}`).update({hasReserved: true}); 
     }); 

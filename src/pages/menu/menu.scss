@@ -24,8 +24,16 @@ page-menu {
         box-shadow: 0;
     }
 
+    ion-card-content {
+        padding: 5px;
+    }
+
     ion-navbar {
         height: 60px;
+    }
+
+    h2, h3{
+        font-weight: 0;
     }
 
     .navbar-title {
@@ -60,7 +68,6 @@ page-menu {
 
     label { 
         font-size: 60px;
-        padding-bottom: 15px;
         color: black;
         display: inline-block;
     }
@@ -101,9 +108,6 @@ page-menu {
         width: 280px;
         margin-top: 10px;
         margin-left: 25px;
-        border-style: solid;
-        border-color: orange;
-        border-radius: 20px;
     }
 
     #today{

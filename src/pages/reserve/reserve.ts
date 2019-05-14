@@ -31,13 +31,16 @@ export class ReservePage {
 
   constructor(private afAuth: AngularFireAuth, private afDatabase: AngularFireDatabase, public alertCtrl: AlertController, public navCtrl: NavController, public navParams: NavParams){
     var open, close;
+
     this.afDatabase.database.ref(`preferences`).orderByValue().on('value', dataSnapshot => {
+
       console.log(dataSnapshot.val())
       var preferences = dataSnapshot.val()
       console.log(preferences.maxTime)
+      var newOpen = moment(preferences.minTime,"HH:mm").fromNow(true).slice(0, 1)
       open = moment(preferences.minTime,"HH:mm").add(8, 'hours');
       close = moment(preferences.maxTime, "HH:mm").add(8, 'hours');
-      console.log(open)
+  
       this.minTime = moment().set({hour: open.hour(), minute: open.minute(), seconds: 0}).toISOString();
       this.maxTime = moment().set({hour: close.hour(), minute: close.minute(), seconds: 0}).toISOString();
       console.log(this.maxTime)
@@ -82,8 +85,15 @@ export class ReservePage {
     var tempSpaces = new Array();
     var hasConflict = false;
     const rangeMoment = extendMoment(moment);
+    var now = moment()
+    var range = rangeMoment.range(moment(start, 'HH:mm'), moment(end, 'HH:mm'))
     if(category === undefined || start === undefined || end === undefined){
       this.alert("Please complete the form");
+      return;
+    }
+
+    if(moment(end, 'HH:mm').isBefore(now) || moment(start, 'HH:mm').isBefore(now)){
+      this.alert("Invalid time input.")
       return;
     }
 
@@ -94,7 +104,6 @@ export class ReservePage {
     
     const reservationRef: firebase.database.Reference = this.afDatabase.database.ref(`reservations`);
     var userTime = rangeMoment.range(moment(start, 'hh:mm'), moment(end, 'hh:mm'));
-    var promise = new Promise((resolve, reject) => {
       this.afDatabase.database.ref(`categories/${category}`).orderByValue().on('value', function(snapshot){
         snapshot.forEach(function(data){
           if(data.val() === true){
@@ -108,17 +117,16 @@ export class ReservePage {
                 }
               });
               if (hasConflict === false){
-                console.log(snapshot.key);
-                tempSpaces.push({ id: snapshot.key, value: false});                
-                resolve();
+                console.log(snapshot.key)
+                tempSpaces.push({ id: snapshot.key, value: 'recommended'});             
               }
               hasConflict = false;
             });
           }
         });
       });
-    });
-
+  
+    console.log(tempSpaces)
    
     setTimeout(() => {
       if(tempSpaces.length == 0){

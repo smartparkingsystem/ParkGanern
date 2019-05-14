@@ -44,19 +44,32 @@ export class MenuPage {
     // console.log(this.userId);
   }
 
-  alert(message: string, space: string, reservation: Reservation){
+ 
+
+  // 30 MINS. BEFORE PARKING START
+  alert1(message: string){
+    this.alertCtrl.create({
+      title: "Notice",
+      message: message,
+      buttons: ['OK'],
+      mode: 'ios'
+    }).present();
+  }
+
+  // STARTED: Continue or Cancel?
+  alert2(message: string, space: string, reservation: Reservation){
     this.alertCtrl.create({
       title: "Cancellation",
       message: message,
       buttons: [
         {
-          text: 'OK',
+          text: 'YES',
           handler: () => {
             this.cancelReservation(space);
           }        
         },
         {
-          text: 'No',
+          text: 'NO',
           handler: () => {
             this.continueReservation(reservation);
           }
@@ -66,23 +79,18 @@ export class MenuPage {
     }).present();
   }
 
-  alert2(message: string){
+  // 30 MINS. BEFORE PARKING ENDS
+  alert3(message: string){
     this.alertCtrl.create({
       title: "Notice",
-      message: message,
-      buttons: [
-        {
-          text: 'OK'   
-        },
-        {
-          text: 'Cancel'
-        }
-      ],
-      mode: 'ios'
+      subTitle: message,
+      buttons: ['OK'],
+      mode: "ios"
     }).present();
   }
 
-  alert3(message: string, reservation: Reservation){
+  // ENDED: Extend or not?
+  alert4(message: string, reservation: Reservation){
     this.alertCtrl.create({
       title: "Extension",
       subTitle: message,
@@ -105,14 +113,8 @@ export class MenuPage {
     }).present();
   } 
 
-  alert4(message: string){
-    this.alertCtrl.create({
-      title: "Notice",
-      subTitle: message,
-      buttons: ['OK'],
-      mode: "ios"
-    }).present();
-  }
+
+
 
   ionViewWillLoad() {
    
@@ -122,11 +124,16 @@ export class MenuPage {
     this.DisplayMap();
     this.afAuth.authState.take(1).subscribe(auth => {
     // var userId = this.afAuth.auth.currentUser.uid;
-      this.afDatabase.database.ref(`/users/${auth.uid}`).on('value', userSnapshot => {
-        this.user = userSnapshot.val();
-        console.log(this.user.hasReserved);
-        this.reservation = this.user.reservation;
-
+    this.afDatabase.database.ref(`/users/${auth.uid}`).on('value', userSnapshot => {
+      this.user = userSnapshot.val();
+      console.log(this.user)
+    })
+      this.afDatabase.database.ref(`/users/${auth.uid}/reservation`).on('value', userSnapshot => {
+        userSnapshot.forEach(snapshot => {
+          this.reservation = snapshot.val()
+        })
+        console.log(this.reservation);
+        console.log(this.reservation.end)
         // var space = this.reservation.space;
         var startPark = this.reservation.start;
         var endPark = this.reservation.end;
@@ -140,7 +147,7 @@ export class MenuPage {
         var beforeEndPark = this.beforeEndPark;
         
         if (currentTime == beforeStartPark){
-          this.alert2('30 MINS. LEFT before PARKING STARTS.');
+          this.alert1('30 MINS. LEFT before PARKING STARTS.');
           // this.sendNotif1();
         }
 
@@ -149,7 +156,7 @@ export class MenuPage {
           var space = this.reservation.space;
           var startPark = this.reservation.start;
           var endPark = this.reservation.end;
-          this.alert('Your reservation already started. Would you like to cancel your reservation for space ' + space + ' from ' + startPark + ' to ' + endPark + '?', space, this.reservation); 
+          this.alert2('Your reservation already started. Would you like to cancel your reservation for space ' + space + ' from ' + startPark + ' to ' + endPark + '?', space, this.reservation); 
         }
     
         // if (currentTime == gracePeriod){
@@ -161,11 +168,11 @@ export class MenuPage {
         // }
     
         if (currentTime == beforeEndPark){
-          this.alert2('30 MINS. LEFT before PARKING ENDS.');
+          this.alert3('30 MINS. LEFT before PARKING ENDS.');
         }
     
         if (currentTime == endPark){
-          this.alert3('Your reservation has ended. Would you like to extend?', this.reservation)
+          this.alert4('Your reservation has ended. Would you like to extend?', this.reservation)
         }
       });
     });    
@@ -246,7 +253,7 @@ export class MenuPage {
   }
 
   showConfirm(reservation: Reservation){
-    this.alert('Are you sure you want to cancel your reservation for space ' + reservation.space + ' from ' + reservation.start + ' to ' + reservation.end + '?', reservation.space, reservation);
+    this.alert2('Are you sure you want to cancel your reservation for space ' + reservation.space + ' from ' + reservation.start + ' to ' + reservation.end + '?', reservation.space, reservation);
   }
 
   cancelReservation(space: string){
