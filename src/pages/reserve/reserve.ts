@@ -106,23 +106,27 @@ export class ReservePage {
     var userTime = rangeMoment.range(moment(start, 'hh:mm'), moment(end, 'hh:mm'));
       this.afDatabase.database.ref(`categories/${category}`).orderByValue().on('value', function(snapshot){
         snapshot.forEach(function(data){
-          if(data.val() === true){
-            reservationRef.child(data.key).orderByKey().on('value',function(snapshot){
-              snapshot.forEach(function(childSnapshot){
-                var bookingData = childSnapshot.val();
-                var time = rangeMoment.range(moment(bookingData.start, 'hh:mm'), moment(bookingData.end, 'hh:mm'));
-                
-                if(userTime.overlaps(time)){
-                  hasConflict = true;                  
-                }
-              });
-              if (hasConflict === false){
-                console.log(snapshot.key)
-                tempSpaces.push({ id: snapshot.key, value: 'recommended'});             
+          reservationRef.child(data.key).orderByKey().on('value',function(snapshot){
+            snapshot.forEach(function(childSnapshot){
+              var bookingData = childSnapshot.val();
+              var time = rangeMoment.range(moment(bookingData.start, 'hh:mm'), moment(bookingData.end, 'hh:mm'));
+              
+              if(userTime.overlaps(time)){
+                hasConflict = true;                  
               }
-              hasConflict = false;
             });
-          }
+            if (hasConflict === false){
+              if(data.val() === true){
+                tempSpaces.push({ id: snapshot.key, color: 'recommended'});   
+              }else{
+                tempSpaces.push({ id: snapshot.key, color: 'available'});   
+              }
+            }else{
+              tempSpaces.push({ id: snapshot.key, color: 'occupied'})
+            }
+            hasConflict = false;
+          });
+          
         });
       });
   

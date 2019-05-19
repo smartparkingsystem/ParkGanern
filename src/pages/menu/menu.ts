@@ -44,7 +44,14 @@ export class MenuPage {
     // console.log(this.userId);
   }
 
- 
+  // logged in alert
+  alert(message: string){
+    this.alertCtrl.create({
+      title: "Alert",
+      message: message,
+      buttons: ['OK']
+    }).present();
+  }
 
   // 30 MINS. BEFORE PARKING START
   alert1(message: string){
@@ -117,7 +124,7 @@ export class MenuPage {
 
 
   ionViewWillLoad() {
-   
+
   }
   
   ionViewDidLoad() {

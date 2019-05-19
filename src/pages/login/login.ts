@@ -43,7 +43,6 @@ export class LoginPage {
 
         this.afAuth.auth.signInWithEmailAndPassword(this.email.value, this.password.value)
         .then(data => {
-          this.alert('Sucess! You\'re logged in!');
           this.navCtrl.setRoot('MenuPage');
         })
         .catch( (error) => {

@@ -31,7 +31,6 @@ export class SpacesPage {
 
   listRef: firebase.database.Reference = this.afDatabase.database.ref(`list`);
   constructor(public navCtrl: NavController, public alertCtrl: AlertController, public navParams: NavParams, private afDatabase: AngularFireDatabase, private afAuth: AngularFireAuth) {
-    this.spaces = this.navParams.get('data');
     this.start = moment(this.navParams.get('start_time')).format('hh:mm A');
     this.end = moment(this.navParams.get('end_time')).format('hh:mm A');
     this.category = this.navParams.get('cat');
@@ -40,7 +39,7 @@ export class SpacesPage {
 
   confirmReservation(message: string, space: any){
     this.alertCtrl.create({
-      title: "Alert",
+      title: "Confirm Reservation",
       message: message,
       buttons: [
         {
@@ -79,26 +78,12 @@ export class SpacesPage {
   }
 
   ionViewDidLoad() {
-    this.allSpaces = [];
-    console.log(this.spaces)
-    console.log("kakdjaskdj")
-    this.afDatabase.database.ref(`spaces`).orderByValue().on('value', spaceSnapshot => {
-      var result = spaceSnapshot.val(); 
-    
-      for(let k in result){  
-        if(this.spaces.some((i) => i.id === k)){
-          this.allSpaces.push({ id: k, color: 'reserved' })
-        }else{
-          if(result[k].status === 'occupied'){
-            this.allSpaces.push({ id: k, color: 'occupied' })
-          }else if(result[k].status === 'available'){
-            this.allSpaces.push({ id: k, color: 'available' })
-          } 
-        }
-               
-      }    
-
-    });
+    this.allSpaces = this.navParams.get('data');
+    var hasRecommended = this.allSpaces.some(({color}) => color.includes('recommended'))
+    if(!hasRecommended){
+      this.alert("We cannot find you a space under this category, but you may select from the available spaces.")
+    }
+ 
   }
 
   ionViewDidEnter(){
@@ -138,11 +123,11 @@ export class SpacesPage {
         var result = preference.val();
         var rangeMoment = extendMoment(moment)
         var range = rangeMoment.range(moment(reservation.start, 'HH:mm'), moment(reservation.end, 'HH:mm'))
-        reservation.fee = (range.diff('minutes') / parseInt(result.rate)) * parseInt(result.amount)
-        console.log(parseInt(result.rate)) 
+        var diff = range.diff('minutes')
+        reservation.fee = (diff / parseInt(result.rate)) * parseInt(result.amount)
+        
       })
-      console.log(reservation.fee)
-      console.log(this.space)
+      reservation.fee = parseInt(reservation.fee.toFixed(2))
       this.afDatabase.database.ref(`reservations/${reservation.space}`).push(reservation);
       this.afDatabase.database.ref(`users/${auth.uid}/reservation`).push(reservation); 
       this.afDatabase.database.ref(`users/${auth.uid}`).update({hasReserved: true}); 

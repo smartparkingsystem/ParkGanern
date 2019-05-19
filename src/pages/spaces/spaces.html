@@ -41,7 +41,7 @@
     <ion-grid class="parkingChart">
       <ion-row>
         <ion-col col-3 *ngFor="let space of allSpaces; let i=index">
-            <ion-chip (click)="showConfirmed(space)" [color]="space.color" outline="true">
+            <ion-chip (click)="showConfirmed(space)" [color]="space.color">
                 <ion-label>{{ space.id }}</ion-label>
             </ion-chip>
         </ion-col>
