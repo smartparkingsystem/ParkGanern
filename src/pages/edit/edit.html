@@ -6,43 +6,43 @@
 -->
 <ion-header>
 
-  <ion-navbar color="primary">
-    <ion-title>Edit</ion-title>
-  </ion-navbar>
-
-</ion-header>
-
-<ion-content padding>
-    <div class="userProfile" *ngIf="(user?.firstname && user?.lastname) && !showFields; else editProfile">
-      <form [formGroup]="userForm">
-        <ion-list inset>
-        <ion-item>
-          <ion-label floating>First Name</ion-label>
-          <ion-input formControlName="firstname" id="firstname" type="text" required [(ngModel)]="user.firstname"  ></ion-input>
-        </ion-item>
-        <ion-item>
-          <ion-label floating>Last Name</ion-label>
-          <ion-input formControlName="lastname" id="lastname" type="text" required [(ngModel)]="user.lastname"></ion-input>
-        </ion-item>
-        <ion-item>
-          <ion-label floating>Driver's License</ion-label>
-          <ion-input formControlName="license" id="license" type="text" required [(ngModel)]="user.license"></ion-input>
-        </ion-item> 
-        <ion-item>
-          <ion-label floating>Mobile Number</ion-label>
-          <ion-input formControlName="mobilenum" id="mobilenum" type="text" required [(ngModel)]="user.mobilenum"></ion-input>
-        </ion-item>
-        <ion-item>
-          <ion-label floating>Plate Number</ion-label>
-          <ion-input formControlName="platenum" id="platenum" type="text" required [(ngModel)]="user.platenum"></ion-input>
-        </ion-item> 
-        <ion-item>
-          <ion-label floating>Birthday</ion-label>
-          <ion-datetime formControlName="birthday" displayFormat="MM/DD/YYYY" [(ngModel)]="user.birthday"></ion-datetime>
-        </ion-item> 
-                  
-      </ion-list> 
-      <button ion-button round secondary medium type="submit" (click)="saveProfile(user)">Create Profile</button>
-      </form>    
-    </div>
-  </ion-content>  
+    <ion-navbar color="primary">
+      <ion-title>Edit</ion-title>
+    </ion-navbar>
+  
+  </ion-header>
+  
+  <ion-content padding>
+      <div class="userProfile" *ngIf="(user?.firstname && user?.lastname) && !showFields; else editProfile">
+        <form [formGroup]="userForm">
+          <ion-list inset>
+          <ion-item>
+            <ion-label floating>First Name</ion-label>
+            <ion-input formControlName="firstname" id="firstname" type="text" required [(ngModel)]="user.firstname"  ></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label floating>Last Name</ion-label>
+            <ion-input formControlName="lastname" id="lastname" type="text" required [(ngModel)]="user.lastname"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label floating>Driver's License</ion-label>
+            <ion-input formControlName="license" id="license" type="text" required [(ngModel)]="user.license"></ion-input>
+          </ion-item> 
+          <ion-item>
+            <ion-label floating>Mobile Number</ion-label>
+            <ion-input formControlName="mobilenum" id="mobilenum" type="text" required [(ngModel)]="user.mobilenum"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label floating>Plate Number</ion-label>
+            <ion-input formControlName="platenum" id="platenum" type="text" required [(ngModel)]="user.platenum"></ion-input>
+          </ion-item> 
+          <ion-item>
+            <ion-label floating>Birthday</ion-label>
+            <ion-datetime formControlName="birthday" displayFormat="MM/DD/YYYY" [(ngModel)]="user.birthday"></ion-datetime>
+          </ion-item> 
+                    
+        </ion-list> 
+        <button ion-button round secondary medium type="submit" (click)="saveProfile(user)">Create Profile</button>
+        </form>    
+      </div>
+    </ion-content>  

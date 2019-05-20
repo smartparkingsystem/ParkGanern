@@ -5,9 +5,8 @@ import { AngularFireAuth } from 'angularfire2/auth';
 import { Reservation } from '../../models/reservation';
 import * as moment from 'moment';
 import { extendMoment } from 'moment-range';
-
 /**
- * Generated class for the ReservePage page.
+ * Generated class for the Extend2Page page.
  *
  * See https://ionicframework.com/docs/components/#navigation for more info on
  * Ionic pages and navigation.
@@ -15,37 +14,19 @@ import { extendMoment } from 'moment-range';
 
 @IonicPage()
 @Component({
-  selector: 'page-reserve',
-  templateUrl: 'reserve.html',
+  selector: 'page-extend2',
+  templateUrl: 'extend2.html',
 })
-
-export class ReservePage {
+export class Extend2Page {
   @ViewChild('startPicker') pickerStart;
   public reservation = {} as Reservation;
   public categories: Array<any> = [];
   public category: String;
-  minTime: any;
-  maxTime: any;
   listRef: firebase.database.Reference = this.afDatabase.database.ref(`list`);
   spaceRef: firebase.database.Reference = this.afDatabase.database.ref(`spaces`);
 
   constructor(private afAuth: AngularFireAuth, private afDatabase: AngularFireDatabase, public alertCtrl: AlertController, public navCtrl: NavController, public navParams: NavParams){
-    var open, close;
 
-    this.afDatabase.database.ref(`preferences`).orderByValue().on('value', dataSnapshot => {
-
-      console.log(dataSnapshot.val())
-      var preferences = dataSnapshot.val()
-      console.log(preferences.maxTime)
-      var newOpen = moment(preferences.minTime,"HH:mm").fromNow(true).slice(0, 1)
-      open = moment(preferences.minTime,"HH:mm").add(8, 'hours');
-      close = moment(preferences.maxTime, "HH:mm").add(8, 'hours');
-  
-      this.minTime = moment().set({hour: open.hour(), minute: open.minute(), seconds: 0}).toISOString();
-      this.maxTime = moment().set({hour: close.hour(), minute: close.minute(), seconds: 0}).toISOString();
-      console.log(this.maxTime)
-    });
-    
   }
 
   alert(message: string){
@@ -57,13 +38,13 @@ export class ReservePage {
   }
 
   ngOnInit(){
-    const now = moment();
-
-    
     
   }
 
   ionViewWillLoad(){
+    var minTime = moment('10:00', ['HH:mm', moment.ISO_8601]);
+    var maxTime = moment('21:00', ['HH:mm', moment.ISO_8601]).format();
+
     this.listRef.on('value', itemSnapshot => {
       itemSnapshot.forEach( itemSnap => {
         this.categories.push(itemSnap.val());
@@ -80,60 +61,60 @@ export class ReservePage {
     return moment(new Date(), ["HH:mm A", moment.ISO_8601]).format();
   }
 
- 
+  reserveSpace(time: string, space: string){
+    let reservation = {} as Reservation;
+    this.afAuth.authState.take(1).subscribe(auth => {
+      reservation.user = auth.uid; 
+      // reservation.time = time;
+      reservation.space = space;
+      const reservationRef: firebase.database.Reference = this.afDatabase.database.ref(`reservations`);
+      const statusRef: firebase.database.Reference = this.afDatabase.database.ref(`spaces/${space}`);
+      reservationRef.push(reservation).then (() => {
+        statusRef.update({status: "unavailable"});
+        this.alert("Congratulations");
+      });
+    });
+  }
+  
   findSpace(category: string, start: any, end: any){
     var tempSpaces = new Array();
     var hasConflict = false;
     const rangeMoment = extendMoment(moment);
-    var now = moment()
-    var range = rangeMoment.range(moment(start, 'HH:mm'), moment(end, 'HH:mm'))
     if(category === undefined || start === undefined || end === undefined){
       this.alert("Please complete the form");
       return;
     }
-
-    if(moment(end, 'HH:mm').isBefore(now) || moment(start, 'HH:mm').isBefore(now)){
-      this.alert("Invalid time input.")
-      return;
-    }
-
-    if(moment(end, 'HH:mm').isBefore(moment(start, 'HH:mm'))){
-      this.alert("End time cannot be earlier than start time. Please review your input.")
-      return;
-    }
-    
     const reservationRef: firebase.database.Reference = this.afDatabase.database.ref(`reservations`);
     var userTime = rangeMoment.range(moment(start, 'hh:mm'), moment(end, 'hh:mm'));
+    var promise = new Promise((resolve, reject) => {
       this.afDatabase.database.ref(`categories/${category}`).orderByValue().on('value', function(snapshot){
         snapshot.forEach(function(data){
-          reservationRef.child(data.key).orderByKey().on('value',function(snapshot){
-            snapshot.forEach(function(childSnapshot){
-              var bookingData = childSnapshot.val();
-              var time = rangeMoment.range(moment(bookingData.start, 'hh:mm'), moment(bookingData.end, 'hh:mm'));
-              
-              if(userTime.overlaps(time)){
-                hasConflict = true;                  
+          if(data.val() === true){
+            reservationRef.child(data.key).orderByKey().on('value',function(snapshot){
+              snapshot.forEach(function(childSnapshot){
+                var bookingData = childSnapshot.val();
+                var time = rangeMoment.range(moment(bookingData.start, 'hh:mm'), moment(bookingData.end, 'hh:mm'));
+                
+                if(userTime.overlaps(time)){
+                  hasConflict = true;                  
+                }
+              });
+              if (hasConflict === false){
+                console.log(snapshot.key);
+                tempSpaces.push(snapshot.key);                
+                resolve();
               }
+              hasConflict = false;
             });
-            if (hasConflict === false){
-              if(data.val() === true){
-                tempSpaces.push({ id: snapshot.key, color: 'recommended'});   
-              }else{
-                tempSpaces.push({ id: snapshot.key, color: 'available'});   
-              }
-            }else{
-              tempSpaces.push({ id: snapshot.key, color: 'occupied'})
-            }
-            hasConflict = false;
-          });
-          
+          }
         });
       });
-  
-    console.log(tempSpaces)
-   
+    });
+
+    
     setTimeout(() => {
       if(tempSpaces.length == 0){
+        console.log("HAAAA");
         this.alert("No spaces available for given time and category. Please try again.");
       }else{
         this.navCtrl.push('SpacesPage', {data: tempSpaces, start_time: moment(start, 'hh:mm A'), end_time: moment(end, 'hh:mm A'), cat: category});

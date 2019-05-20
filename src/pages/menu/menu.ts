@@ -44,7 +44,14 @@ export class MenuPage {
     // console.log(this.userId);
   }
 
- 
+  // logged in alert
+  alert(message: string){
+    this.alertCtrl.create({
+      title: "Alert",
+      message: message,
+      buttons: ['OK']
+    }).present();
+  }
 
   // 30 MINS. BEFORE PARKING START
   alert1(message: string){
@@ -99,7 +106,7 @@ export class MenuPage {
           text: 'YES',
           handler: () => {
             this.extendParking();
-            this.continueReservation(reservation);
+            // this.continueReservation(reservation);
           }        
         },
         {
@@ -117,7 +124,7 @@ export class MenuPage {
 
 
   ionViewWillLoad() {
-   
+
   }
   
   ionViewDidLoad() {
@@ -134,7 +141,7 @@ export class MenuPage {
         })
         console.log(this.reservation);
         console.log(this.reservation.end)
-        // var space = this.reservation.space;
+        var space = this.reservation.space;
         var startPark = this.reservation.start;
         var endPark = this.reservation.end;
         var currentTime = this.currentTime;
@@ -147,15 +154,15 @@ export class MenuPage {
         var beforeEndPark = this.beforeEndPark;
         
         if (currentTime == beforeStartPark){
-          this.alert1('30 MINS. LEFT before PARKING STARTS.');
+          this.alert1('10 MINS. LEFT before PARKING STARTS.');
           // this.sendNotif1();
         }
 
         if (currentTime == startPark){
-          this.reservation = this.user.reservation;
-          var space = this.reservation.space;
-          var startPark = this.reservation.start;
-          var endPark = this.reservation.end;
+          // this.reservation = this.user.reservation;
+          // var space = this.reservation.space;
+          // var startPark = this.reservation.start;
+          // var endPark = this.reservation.end;
           this.alert2('Your reservation already started. Would you like to cancel your reservation for space ' + space + ' from ' + startPark + ' to ' + endPark + '?', space, this.reservation); 
         }
     
@@ -168,7 +175,7 @@ export class MenuPage {
         // }
     
         if (currentTime == beforeEndPark){
-          this.alert3('30 MINS. LEFT before PARKING ENDS.');
+          this.alert3('10 MINS. LEFT before PARKING ENDS.');
         }
     
         if (currentTime == endPark){

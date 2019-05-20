@@ -20,14 +20,9 @@
       <ion-item>Driver: {{ user?.firstname }} {{ user?.lastname }}</ion-item>
       <ion-item>License: {{ user?.license }}</ion-item>
       <ion-item>Plate number: {{ user?.platenum }}</ion-item>
+      <ion-item>Time Duration: {{ reservation.start }} - {{ reservation.end }}</ion-item>
+      <ion-item color="primary">Parking Fee: {{ reservation.fee }}</ion-item>
     </ion-list>
-  </ion-card>
-
-  <ion-card>
-    <ion-item>Time Duration: {{ reservation.start }}</ion-item>
-    <ion-item>Interval: 0</ion-item>
-    <ion-item>Rate per Interval: 0</ion-item>
-    <ion-item color="primary">Parking Fee: {{ reservation.fee }}</ion-item>
   </ion-card>
 
   <ion-label id="reminder" text-center>*Please pay your parking fee before leaving</ion-label>

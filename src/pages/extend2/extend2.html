@@ -1,0 +1,26 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>Extend Reservation</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>  
+    <ion-list> 
+      <ion-item>
+        <ion-label>Start Time: </ion-label> <ion-datetime required [(ngModel)]="start" [min]="minTime" [max]="maxTime" pickerFormat="HH:mm"></ion-datetime>
+      </ion-item>
+      <ion-item>
+        <ion-label>End Time: </ion-label> <ion-datetime required [(ngModel)]="end"  [min]="minTime" [max]="maxTime" pickerFormat="HH:mm"></ion-datetime>
+      </ion-item>
+      <ion-item>
+        <ion-label>Category: </ion-label>
+        <ion-select required [(ngModel)]="category" multiple="False">
+          <ion-option *ngFor="let cat of categories" value="{{cat}}">{{ cat }}</ion-option>
+        </ion-select>
+      </ion-item>
+  </ion-list>
+ 
+  <button ion-button (click)="findSpace(end)">Extend</button>
+
+  
+</ion-content>
