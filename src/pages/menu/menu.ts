@@ -120,11 +120,8 @@ export class MenuPage {
     }).present();
   } 
 
-
-
-
   ionViewWillLoad() {
-
+    // this.checkParking();
   }
   
   ionViewDidLoad() {
@@ -185,6 +182,7 @@ export class MenuPage {
     });    
     
     this.getLocation();
+    this.checkParking();
   }
   
   profilePage(){
@@ -204,12 +202,34 @@ export class MenuPage {
   }
 
   beginParking(){
-    const statusRef: firebase.database.Reference = this.afDatabase.database.ref(`spaces/D2`);
-    this.afDatabase.database.ref(`spaces/D2/led_status`).once('value').then(function(snapshot){
+    let reservation = this.reservation;
+    const statusRef: firebase.database.Reference = this.afDatabase.database.ref(`spaces/${reservation.space}`);
+    this.afDatabase.database.ref(`spaces/${reservation.space}/led_status`).once('value').then(function(snapshot){
       if(snapshot.val() === 1){
         statusRef.update({ led_status: 0})
       }else{
         statusRef.update({ led_status: 1})
+      }
+    });
+  }
+
+  checkParking(){
+    let reservation = this.reservation;
+    // const statusRef: firebase.database.Reference = this.afDatabase.database.ref(`spaces/${reservation.space}`);
+    this.afDatabase.database.ref(`spaces/${reservation.space}/status`).once('value').then(function(snapshot){
+      if(snapshot.val() === "occupied"){
+        console.log("It's occupied")
+        const statusRef: firebase.database.Reference = firebase.database().ref(`spaces/${reservation.space}`);
+        firebase.database().ref(`spaces/${reservation.space}/led_status`).once('value').then(function(snapshot){
+          if(snapshot.val() === 1){
+            statusRef.update({ led_status: 0})
+          }else{
+            statusRef.update({ led_status: 1})
+          }
+        });
+    
+      }else{
+        console.log("It's available")
       }
     });
   }
