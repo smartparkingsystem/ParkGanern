@@ -229,7 +229,12 @@ export class MenuPage {
         });
     
       }else{
-        console.log("It's available")
+        console.log("WRONG PARKING AREA")
+        // let reservation = this.reservation;
+        // this.mispark()
+
+        firebase.database().ref(`misparking/${reservation.space}`).push(reservation)
+
       }
     });
   }
