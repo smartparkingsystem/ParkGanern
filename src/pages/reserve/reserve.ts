@@ -110,8 +110,6 @@ export class ReservePage {
             snapshot.forEach(childSnapshot => {
               var bookingData = childSnapshot.val();
               var time = rangeMoment.range(moment(bookingData.start, 'HH:mm A'), moment(bookingData.end, 'HH:mm A'));
-              console.log(userTime)
-              console.log(time)
               if(userTime.overlaps(time)){
                 console.log(time)
                 hasConflict = true;                  

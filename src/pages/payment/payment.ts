@@ -63,6 +63,7 @@ export class PaymentPage {
       let space = this.reservation.space;
       this.afDatabase.database.ref(`/users/${auth.uid}/reservation`).remove();
       this.afDatabase.database.ref(`/users/${auth.uid}`).update({hasReserved: false});
+      this.afDatabase.database.ref(`/users/${auth.uid}`).update({hasStarted: false});
 
       this.afDatabase.database.ref(`reservations/${space}`).orderByKey().on('value', function(snapshot){
         snapshot.forEach(function(data){
@@ -83,7 +84,7 @@ export class PaymentPage {
         });
       });
     }); 
-    this.navCtrl.push('MenuPage');
+    this.navCtrl.setRoot('MenuPage');
   }
 
 }

@@ -215,10 +215,11 @@ export class MenuPage {
 
   checkParking(){
     let reservation = this.reservation;
-    // const statusRef: firebase.database.Reference = this.afDatabase.database.ref(`spaces/${reservation.space}`);
-    this.afDatabase.database.ref(`spaces/${reservation.space}/status`).once('value').then(function(snapshot){
+    this.afDatabase.database.ref(`spaces/${reservation.space}/status`).once('value').then(snapshot => {
       if(snapshot.val() === "occupied"){
-        console.log("It's occupied")
+        this.afAuth.authState.take(1).subscribe(auth => {
+          this.afDatabase.database.ref(`users/${auth.uid}`).update({hasStarted: true}); 
+        });
         const statusRef: firebase.database.Reference = firebase.database().ref(`spaces/${reservation.space}`);
         firebase.database().ref(`spaces/${reservation.space}/led_status`).once('value').then(function(snapshot){
           if(snapshot.val() === 1){
@@ -230,10 +231,7 @@ export class MenuPage {
     
       }else{
         console.log("WRONG PARKING AREA")
-        // let reservation = this.reservation;
-        // this.mispark()
-
-        firebase.database().ref(`misparking/${reservation.space}`).push(reservation)
+      
 
       }
     });

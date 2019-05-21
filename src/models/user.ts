@@ -9,5 +9,6 @@ export interface User {
     platenum: string;
     reservation: Reservation;
     hasReserved: boolean;
+    hasStarted: boolean;
     notifications: string;
 }

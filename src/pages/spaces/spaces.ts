@@ -131,6 +131,7 @@ export class SpacesPage {
       this.afDatabase.database.ref(`reservations/${reservation.space}`).push(reservation);
       this.afDatabase.database.ref(`users/${auth.uid}/reservation`).push(reservation); 
       this.afDatabase.database.ref(`users/${auth.uid}`).update({hasReserved: true}); 
+      this.afDatabase.database.ref(`users/${auth.uid}/hasStarted`).set(false); 
     }); 
 
 
