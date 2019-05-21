@@ -79,6 +79,7 @@ export class SpacesPage {
 
   ionViewDidLoad() {
     this.allSpaces = this.navParams.get('data');
+    this.allSpaces = this.allSpaces.sort((a,b) => (a.id > b.id) ? 1 : ((b.id > a.id) ? -1 : 0));
     var hasRecommended = this.allSpaces.some(({color}) => color.includes('recommended'))
     if(!hasRecommended){
       this.alert("We cannot find you a space under this category, but you may select from the available spaces.")

@@ -121,7 +121,7 @@ export class MenuPage {
   } 
 
   ionViewWillLoad() {
-    // this.checkParking();
+
   }
   
   ionViewDidLoad() {
@@ -215,6 +215,7 @@ export class MenuPage {
 
   checkParking(){
     let reservation = this.reservation;
+    console.log(this.reservation.space)
     this.afDatabase.database.ref(`spaces/${reservation.space}/status`).once('value').then(snapshot => {
       if(snapshot.val() === "occupied"){
         this.afAuth.authState.take(1).subscribe(auth => {
@@ -230,8 +231,30 @@ export class MenuPage {
         });
     
       }else{
+        var userExists = false;
+        var userId;
+        this.afAuth.authState.take(1).subscribe(auth => {
+         userId = auth.uid;
+        });
         console.log("WRONG PARKING AREA")
-      
+        this.afDatabase.database.ref(`misparking/${reservation.space}`).orderByValue().on('value', snapshot => {
+          snapshot.forEach(childSnapshot => {
+            var childData = childSnapshot.val();
+            if(childData.user === userId){
+              userExists = true;
+              this.afDatabase.database.ref(`misparking/${reservation.space}/${childSnapshot.key}`).update({ value: childData.value + 1 })
+            }
+          })
+        })
+
+        if(!userExists){
+    
+          this.afAuth.authState.take(1).subscribe(auth => {
+            var object = { user: auth.uid, value: 1}
+            this.afDatabase.database.ref(`misparking/${reservation.space}`).push(object)
+          });
+          
+        }
 
       }
     });

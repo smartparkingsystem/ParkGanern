@@ -104,31 +104,46 @@ export class ReservePage {
     
     const reservationRef: firebase.database.Reference = this.afDatabase.database.ref(`reservations`);
     var userTime = rangeMoment.range(moment(start, 'HH:mm A'), moment(end, 'HH:mm A'));
-      this.afDatabase.database.ref(`categories/${category}`).orderByValue().on('value', function(snapshot){
-        snapshot.forEach(function(data){
-          reservationRef.child(data.key).orderByKey().on('value', snapshot => {
-            snapshot.forEach(childSnapshot => {
-              var bookingData = childSnapshot.val();
-              var time = rangeMoment.range(moment(bookingData.start, 'HH:mm A'), moment(bookingData.end, 'HH:mm A'));
-              if(userTime.overlaps(time)){
-                console.log(time)
-                hasConflict = true;                  
-              }
-            });
-            if (hasConflict === false){
+    var conflictsWithOccupied = {};
+    this.afDatabase.database.ref(`occupied`).orderByValue().on('value', snapshot => {
+      snapshot.forEach(childSnapshot => {
+        var occupiedData = childSnapshot.val();
+        var time = rangeMoment.range(moment(occupiedData.start, 'HH:mm A'), moment(occupiedData.end, 'HH:mm A'))
+        if(userTime.overlaps(time)){
+          conflictsWithOccupied[occupiedData.space] = true
+        }else{
+          conflictsWithOccupied[occupiedData.space] = false
+        }
+      });
+    });
+    this.afDatabase.database.ref(`categories/${category}`).orderByValue().on('value', function(snapshot){
+      snapshot.forEach(function(data){
+        reservationRef.child(data.key).orderByKey().on('value', snapshot => {
+          snapshot.forEach(childSnapshot => {
+            var bookingData = childSnapshot.val();
+            var time = rangeMoment.range(moment(bookingData.start, 'HH:mm A'), moment(bookingData.end, 'HH:mm A'));
+            if(userTime.overlaps(time)){
+              hasConflict = true;                  
+            }
+          });
+          if (hasConflict === false){
+            if(conflictsWithOccupied[snapshot.key]){
+              tempSpaces.push({ id: snapshot.key, color: 'occupied'})
+            }else{
               if(data.val() === true){
                 tempSpaces.push({ id: snapshot.key, color: 'recommended'});   
               }else{
                 tempSpaces.push({ id: snapshot.key, color: 'available'});   
               }
-            }else{
-              tempSpaces.push({ id: snapshot.key, color: 'occupied'})
             }
-            hasConflict = false;
-          });
-          
+          }else{
+            tempSpaces.push({ id: snapshot.key, color: 'occupied'})
+          }
+          hasConflict = false;
         });
+        
       });
+    });
   
     console.log(tempSpaces)
    
