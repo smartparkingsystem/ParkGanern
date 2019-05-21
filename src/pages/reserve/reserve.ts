@@ -103,15 +103,17 @@ export class ReservePage {
     }
     
     const reservationRef: firebase.database.Reference = this.afDatabase.database.ref(`reservations`);
-    var userTime = rangeMoment.range(moment(start, 'hh:mm'), moment(end, 'hh:mm'));
+    var userTime = rangeMoment.range(moment(start, 'HH:mm A'), moment(end, 'HH:mm A'));
       this.afDatabase.database.ref(`categories/${category}`).orderByValue().on('value', function(snapshot){
         snapshot.forEach(function(data){
-          reservationRef.child(data.key).orderByKey().on('value',function(snapshot){
-            snapshot.forEach(function(childSnapshot){
+          reservationRef.child(data.key).orderByKey().on('value', snapshot => {
+            snapshot.forEach(childSnapshot => {
               var bookingData = childSnapshot.val();
-              var time = rangeMoment.range(moment(bookingData.start, 'hh:mm'), moment(bookingData.end, 'hh:mm'));
-              
+              var time = rangeMoment.range(moment(bookingData.start, 'HH:mm A'), moment(bookingData.end, 'HH:mm A'));
+              console.log(userTime)
+              console.log(time)
               if(userTime.overlaps(time)){
+                console.log(time)
                 hasConflict = true;                  
               }
             });

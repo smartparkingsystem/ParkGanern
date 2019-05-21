@@ -30,7 +30,7 @@ export class MenuPage {
   beforeEndPark;
   gracePeriod;
   currentTime = moment().format('hh:mm A');
-  
+  hasStarted = false
   user = {} as User;
   reservation = {} as Reservation;
   public spaces: Array<any> = [];
