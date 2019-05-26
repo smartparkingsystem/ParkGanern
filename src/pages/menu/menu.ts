@@ -237,7 +237,7 @@ export class MenuPage {
          userId = auth.uid;
         });
         console.log("WRONG PARKING AREA")
-        this.afDatabase.database.ref(`misparking/${reservation.space}`).orderByValue().on('value', snapshot => {
+        this.afDatabase.database.ref(`misparking/${reservation.space}`).orderByValue().once('value').then(snapshot => {
           snapshot.forEach(childSnapshot => {
             var childData = childSnapshot.val();
             if(childData.user === userId){

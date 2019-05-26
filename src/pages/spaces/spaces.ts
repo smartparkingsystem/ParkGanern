@@ -112,10 +112,12 @@ export class SpacesPage {
   reserveSpace(space: any){
     console.log("BEEE BEEE BEEE");
     let reservation = {} as Reservation;
-
+    var user_id;
     this.afAuth.authState.take(1).subscribe(auth => {
-
-      reservation.user = auth.uid;
+      this.afDatabase.database.ref(`users/${auth.uid}`).orderByValue().once('value', snapshot => {
+        var userData = snapshot.val()
+        reservation.user = userData.firstname + " " + userData.lastname;
+      });
       reservation.start = this.start;
       reservation.end = this.end;
       reservation.space = space.id;
@@ -126,8 +128,8 @@ export class SpacesPage {
         var range = rangeMoment.range(moment(reservation.start, 'HH:mm'), moment(reservation.end, 'HH:mm'))
         var diff = range.diff('minutes')
         reservation.fee = (diff / parseInt(result.rate)) * parseInt(result.amount)
-        
-      })
+      });
+      
       reservation.fee = parseInt(reservation.fee.toFixed(2))
       this.afDatabase.database.ref(`reservations/${reservation.space}`).push(reservation);
       this.afDatabase.database.ref(`users/${auth.uid}/reservation`).push(reservation); 
